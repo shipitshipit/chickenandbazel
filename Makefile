@@ -8,11 +8,9 @@ STAGE=$(WORKDIR)/.stage
 
 
 VER_BAZELISK=1.5.0
-SHA_BAZELISK=92567ee340797fff5d833e627083787a276c9d2b
 URL_BAZELISK="https://github.com/bazelbuild/bazelisk/releases/download/v$(VER_BAZELISK)/bazelisk-darwin-amd64"
 
 VER_IBAZEL=0.13.1
-SHA_IBAZEL=92567ee340797fff5d833e627083787a276c9d2b
 URL_IBAZEL="https://github.com/bazelbuild/bazel-watcher/releases/download/v$(VER_IBAZEL)/ibazel_darwin_amd64"
 
 PKG_UPPERNAME=ChickenAndBazel
@@ -38,11 +36,11 @@ $(STAGE)/$(BINDIR)/ibazel: $(DISTRIB)/ibazel-$(VER_IBAZEL)
 
 $(DISTRIB)/bazelisk-$(VER_BAZELISK): $(FILE_THAT_NEVER_CHANGES)
 	@mkdir -p $(@D)
-	curl -Lo $@ $(URL_BAZELISK) && touch $@
+	curl -Lo $@ $(URL_BAZELISK) && echo "$(@F) checksumming" && grep $(@F) checksums.shasum | (cd $(@D) && shasum -sc - ) && echo "$(@F) SHA OK" && touch $@ || rm -f $@
 
 $(DISTRIB)/ibazel-$(VER_IBAZEL): $(FILE_THAT_NEVER_CHANGES)
 	@mkdir -p $(@D)
-	curl -Lo $@ $(URL_IBAZEL) && touch $@
+	curl -Lo $@ $(URL_IBAZEL) && echo "$(@F) checksumming" && grep $(@F) checksums.shasum | (cd $(@D) && shasum -sc - ) && echo "$(@F) SHA OK" && touch $@ || rm -f $@
 
 
 # "generated" in here rather than as static files in the version-control only to keep things in the
