@@ -22,7 +22,7 @@ ifeq ($(DESTDIR),)
   DESTDIR=.
 endif
 
-$(DESTDIR)/$(PKG_UPPERNAME).pkg: $(STAGE)/$(BINDIR)/bazel $(STAGE)/$(BINDIR)/ibazel $(PLIST) $(SCRIPTS)/postinstall
+$(DESTDIR)/$(PKG_UPPERNAME)-$(VER_BAZELISK).pkg: $(STAGE)/$(BINDIR)/bazel $(STAGE)/$(BINDIR)/ibazel $(PLIST) $(SCRIPTS)/postinstall
 	@mkdir -p $(@D)
 	pkgbuild --identifier nu.old.$(PKG_NAME) --component-plist $(PLIST) --scripts $(SCRIPTS) --version $(VER_BAZELISK) --root $(STAGE) $@
 
