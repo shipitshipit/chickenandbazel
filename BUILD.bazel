@@ -1,0 +1,12 @@
+load("@rules_pkg//:pkg.bzl", "pkg_tar")
+
+# The resulting PKG should be installable by:
+#
+# sudo installer -pkg bazel-out/darwin-fastbuild/bin/chickenandbazel.pkg -target /
+
+pkg_tar(
+    name = "chickenandbazel",
+    mode = "0755",
+    srcs = [ "//scripts:check-installs.sh" ],
+    package_dir = "/usr/local/bin",
+)

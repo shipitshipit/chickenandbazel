@@ -1,0 +1,17 @@
+# To install the dependencies for this file:
+# i1) pip install pre-commit
+#   (really, "sudo python3 -m pip install pre-commit")
+#
+# pre-commit install --allow-missing-config
+#
+# yamllint checks this .pre-commit-config file as well
+---
+repos:
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.26.0
+    hooks:
+      - id: yamllint
+        args: [
+          '-d',
+          '{extends: relaxed, rules: {line-length: {max: 320}}}'
+        ]
