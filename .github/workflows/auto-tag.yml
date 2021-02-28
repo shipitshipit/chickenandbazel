@@ -1,0 +1,32 @@
+name: Bump version
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      # fetch-depth 0 gives us the full history
+      with:
+        fetch-depth: '0'
+    - id: dryrun
+      env:
+        DRY_RUN: true
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      name: DryRun version and push tag
+      uses: anothrNick/github-tag-action@1.26.0
+    - name: Mount bazel cache
+      uses: actions/cache@v3
+      with:
+        path: "~/.cache/bazel"
+        key: bazel
+    - run: bazel build //... --action_env=VERSION="${{ steps.taggerDryRun.outputs.new_tag }}"
+    - id: actualrun
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        WITH_V: true
+      name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.26.0
