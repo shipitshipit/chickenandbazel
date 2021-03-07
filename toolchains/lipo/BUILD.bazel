@@ -1,0 +1,49 @@
+package(default_visibility = ["//visibility:private"])
+
+load(":toolchain.bzl", "is_lipo_available", "lipo_toolchain")
+load(":http_files.bzl", "NAME_TOOL")
+# NAME_TOOL[0] -- ie latest -- works out to:
+# { platformcode: { url, sha256 } } such as NAME_TOOL[0].keys() == [ "bazelisk-darwin-amd64", "bazelisk-darwin-arm64" ]
+
+load(":toolchains.bzl", "toolchains")
+
+toolchains()
+# result of this are instances of (for all NAME_TOOL[0].keys() == [ "bazelisk-darwin-amd64", "bazelisk-darwin-arm64" ])
+#    lipo_toolchain(
+#        name = "lipo_darwin_amd64",
+#        path = "@lipo_darwin_amd64//file",
+#        visibility = ["//visibility:public"],
+#    )
+
+# Allow a select() on whether we have a lipo to configure-out any targets that need it.  So far
+# this is just planning for future possibility of salvaging a half-build over none.  I see this in
+# aiuto's check for an RPM binary as an automatic toolchain
+config_setting(
+    name = "have_lipo",
+    flag_values = {
+        ":is_lipo_available": "1",
+    },
+    visibility = ["//visibility:public"],
+)
+
+is_lipo_available(
+    name = "is_lipo_available",
+    visibility = ["//visibility:public"],
+)
+
+toolchain_type(
+    name = "toolchain_type",
+    # needs to be visible from the virtual_external toolchain (default: system_lipo) built by
+    # toolchains/lipo/configure_lipo_from_system.bzl%find_system_lipo() hydrating BUILD.tpl
+    visibility = ["//visibility:public"],
+)
+
+lipo_toolchain(
+    name = "no_lipo",
+)
+
+toolchain(
+    name = "lipo_missing_toolchain",
+    toolchain = ":no_lipo",
+    toolchain_type = ":toolchain_type",
+)

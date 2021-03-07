@@ -4,9 +4,14 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar")
 #
 # sudo installer -pkg bazel-out/darwin-fastbuild/bin/chickenandbazel.pkg -target /
 
+# Test this payload with:
+#     bazel build //:chickenandbazel && tar tzf bazel-bin/chickenandbazel.tar
 pkg_tar(
     name = "chickenandbazel",
+    srcs = [
+        "//scripts:check-installs.sh",
+        "//toolchains/ibazel:ibazel.lipo",
+    ],
     mode = "0755",
-    srcs = [ "//scripts:check-installs.sh" ],
     package_dir = "/usr/local/bin",
 )
