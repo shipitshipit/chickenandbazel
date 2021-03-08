@@ -1,5 +1,7 @@
-load("//lib:lipo.bzl", "lipo_create")
+load("//lib:lipo.bzl", "lipo_check", "lipo_create")
 load(":name-version-sha.bzl", "binaries")
+
+lipo_check(binary = ":ibazel")
 
 #name = "ibazel.lipo",
 lipo_create(
