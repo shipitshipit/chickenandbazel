@@ -1,5 +1,4 @@
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "rules_pkg",
@@ -27,10 +26,20 @@ load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
 
+###
+# Tools bundled
+
+load("//toolchains/bazelisk:deps.bzl", bazelisk_deps = "deps")
+
+bazelisk_deps()
+
 load("//toolchains/ibazel:deps.bzl", ibazel_deps = "deps")
 
 ibazel_deps()
 
+###
+# LIPO
+#
 # Find system lipo if it exists.
 load("//toolchains/lipo:configure_lipo_from_system.bzl", "find_system_lipo")
 

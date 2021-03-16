@@ -10,8 +10,12 @@ pkg_tar(
     name = "chickenandbazel",
     srcs = [
         "//scripts:check-installs.sh",
+        "//toolchains/bazelisk:bazelisk.lipo",
         "//toolchains/ibazel:ibazel.lipo",
     ],
     mode = "0755",
     package_dir = "/usr/local/bin",
+    symlinks = {
+        "usr/local/bin/bazel": "bazelisk",
+    },
 )

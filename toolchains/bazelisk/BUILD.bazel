@@ -1,0 +1,8 @@
+load("//lib:lipo.bzl", "lipo_create")
+load(":name-version-sha.bzl", "binaries")
+
+#name = "bazelisk.lipo",
+lipo_create(
+    srcs = binaries(),
+    out = "bazelisk",
+)
