@@ -1,1 +1,4 @@
-exports_files(["lipo_verify_arch_wrapper.sh"])
+exports_files([
+    "lipo_verify_arch_wrapper.sh",
+    "pkgbuild_tars.sh.tpl",
+])

@@ -1,13 +1,16 @@
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
+load("@//lib:pkgbuild.bzl", "pkgbuild_tars")
 
 # The resulting PKG should be installable by:
 #
 # sudo installer -pkg bazel-out/darwin-fastbuild/bin/chickenandbazel.pkg -target /
 
+VERSION = "1.7.5"
+
 # Test this payload with:
 #     bazel build //:chickenandbazel && tar tzf bazel-bin/chickenandbazel.tar
 pkg_tar(
-    name = "chickenandbazel",
+    name = "binaries",
     srcs = [
         "//scripts:check-installs.sh",
         "//toolchains/bazelisk:bazelisk.lipo",
@@ -18,4 +21,12 @@ pkg_tar(
     symlinks = {
         "usr/local/bin/bazel": "bazelisk",
     },
+)
+
+pkgbuild_tars(
+    name = "pkg",
+    package_name = "chickenandbazel.pkg",
+    identifier = "nu.old.chickenandbazel",
+    tars = [":binaries"],
+    version = VERSION,
 )
