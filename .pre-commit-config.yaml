@@ -15,6 +15,12 @@ repos:
           '-d',
           '{extends: relaxed, rules: {line-length: {max: 320}}}'
         ]
+  - repo: https://github.com/python-jsonschema/check-jsonschema
+    rev: 0.20.0
+    hooks:
+      - id: check-github-actions
+      - id: check-github-workflows
+      - id: check-renovate
   - repo: https://github.com/warchant/pre-commit-buildifier
     rev: 0.0.2
     hooks:
