@@ -4,5 +4,5 @@ load(":name-version-sha.bzl", "binaries")
 lipo_create(
     name = "lipo",
     srcs = binaries(),
-    out = "bazelisk",
+    out = "git-town",
 )

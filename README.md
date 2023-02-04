@@ -25,6 +25,7 @@ That's all I got.
 1. install ChickenAndBazel.pkg by:
     1. double-clicking on a Mac, or
     2. sudo installer -pkg ChickenAndBazel.pkg -verbose -target /
+    3. git town alias true
 2. "bazel" and "ibazel" are now on your PATH (if /usr/local/bin is on your PATH)
 3. be aware that "ibazel" is not graceful if there's no WORKSPACE file in your work dir
 

@@ -3,8 +3,8 @@ load(":name-version-sha.bzl", "binaries")
 
 lipo_check(binary = ":ibazel")
 
-#name = "ibazel.lipo",
 lipo_create(
+    name = "lipo",
     srcs = binaries(),
     out = "ibazel",
 )

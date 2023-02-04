@@ -18,10 +18,6 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
-
-py_repositories()
-
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
@@ -32,6 +28,10 @@ rules_pkg_dependencies()
 load("//toolchains/bazelisk:deps.bzl", bazelisk_deps = "deps")
 
 bazelisk_deps()
+
+load("//toolchains/git-town:deps.bzl", git_town_deps = "deps")
+
+git_town_deps()
 
 load("//toolchains/ibazel:deps.bzl", ibazel_deps = "deps")
 
