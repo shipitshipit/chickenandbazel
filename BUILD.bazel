@@ -13,8 +13,9 @@ pkg_tar(
     name = "binaries",
     srcs = [
         "//scripts:check-installs.sh",
-        "//toolchains/bazelisk:bazelisk.lipo",
-        "//toolchains/ibazel:ibazel.lipo",
+        "//toolchains/bazelisk:lipo",
+        "//toolchains/git-town:lipo",
+        "//toolchains/ibazel:lipo",
     ],
     mode = "0755",
     package_dir = "/usr/local/bin",
