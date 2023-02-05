@@ -1,0 +1,40 @@
+# yamllint disable rule:document-start rule:line-length
+name: Merge Bot
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request_review:
+    types:
+      - submitted
+
+jobs:
+
+  merge:
+    if: github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+    name: Merge on Accepted PR
+    permissions:  # let's trim these after it's working
+      # actions: read|write|none
+      checks: write
+      contents: write
+      deployments: write
+      discussions: write
+      id-token: write
+      issues: write
+      packages: write
+      pages: write
+      pull-requests: write
+      repository-projects: write
+      # security-events: read|write|none
+      statuses: write
+    steps:
+      - name: Merge Workflow
+        uses: squalrus/merge-bot@v0.4.5
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          reviewers: true
+          # Really seems to be ignoring these
+          labels: automerge
+          blocking_labels: do not merge
+          checks_enabled: true
+          delete_source_branch: true
