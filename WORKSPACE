@@ -14,8 +14,9 @@ http_archive(
 
 http_archive(
     name = "rules_python",
-    sha256 = "778197e26c5fbeb07ac2a2c5ae405b30f6cb7ad1f5510ea6fdac03bded96cc6f",
-    url = "https://github.com/bazelbuild/rules_python/releases/download/0.2.0/rules_python-0.2.0.tar.gz",
+    sha256 = "36362b4d54fcb17342f9071e4c38d63ce83e2e57d7d5599ebdde4670b9760664",
+    strip_prefix = "rules_python-0.18.0",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.18.0/rules_python-0.18.0.tar.gz",
 )
 
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
