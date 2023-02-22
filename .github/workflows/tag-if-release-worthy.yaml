@@ -20,11 +20,12 @@ jobs:
           fetch-depth: 0
       # action runners have bazelisk: - uses: bazelbuild/setup-bazelisk@v2
       - name: 'Release-Worthy? Tag it if worthy'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          pwd
-          ls -al
-          python3 -V
-          git --version
-          env | sort
           python3 -m pip install GitPython==3.1.27
+          git config user.email "discard@example.com"
+          git config user.name "Release-Worthiness Github Action"
+          git config credential.helper store
+          echo "https://githubaction:${{ secrets.GITHUB_TOKEN }}@github.com" > ${HOME}/.git-credentials
           python3 lib/python/release-worthy.py --repo_path $(pwd) --autotag_release --autotag_threshold major=1.0.0 minor=0.1.0 patch=0.0.5
