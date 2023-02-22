@@ -1,0 +1,29 @@
+name: Release-Worthiness
+
+env:
+  HOMEBREW_NO_AUTO_UPDATE: 1
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  tag_if_worth_releasing:
+    if: github.event.pull_request.merged == true
+    name: Auto-Tag if sufficient change since last tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # action runners have bazelisk: - uses: bazelbuild/setup-bazelisk@v2
+      - name: 'Release-Worthy? Tag it if worthy'
+        run: |
+          pwd
+          ls -al
+          python3 -V
+          git --version
+          env | sort
+          python3 -m pip install GitPython==3.1.27
+          python3 lib/python/release-worthy.py --repo_path $(pwd) --dryrun --autotag_release --autotag_threshold major=1.0.0 minor=0.1.0 patch=0.0.5

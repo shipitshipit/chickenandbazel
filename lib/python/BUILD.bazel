@@ -1,0 +1,12 @@
+py_binary(
+    name = "release-worthy",
+    srcs = ["release-worthy.py"],
+)
+
+py_test(
+    name = "weights_test",
+    srcs = ["weights_test.py"],
+    #deps = [
+    #    "//path/to/a/py/library",
+    #],
+)
