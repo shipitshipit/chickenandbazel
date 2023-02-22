@@ -238,7 +238,7 @@ def main():
                 message="Backlog sufficient to post automatic release",
             )
             print(f"Tagged {new_version} per {release}")
-            repo.remote.origin.push(new_version)
+            repo.remote().push(new_version)
             print(f"Pushed {new_version} to {repo.remote.origin}")
         else:
             print(f"Skipped (dryrun) tagging {new_version} per {release}")
