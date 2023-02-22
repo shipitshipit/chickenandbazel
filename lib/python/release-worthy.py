@@ -233,13 +233,16 @@ def main():
         new_version = int_to_semver(new_tag)
         if not args.dryrun:
             repo.create_tag(
-                int_to_semver(new_tag),  # new version as v-prefixed dotted-semver
+                new_version,  # new version as v-prefixed dotted-semver
                 ref="HEAD",
                 message="Backlog sufficient to post automatic release",
             )
             print(f"Tagged {new_version} per {release}")
+            repo.remote.origin.push(new_version)
+            print(f"Pushed {new_version} to {repo.remote.origin}")
         else:
             print(f"Skipped (dryrun) tagging {new_version} per {release}")
+            print(f"Skipped (dryrun) pushing {new_version} to {[x for x in repo.remote().urls][0]}")
     elif args.autotag_release:
         print("found insufficient commit charge worth releasing")
 
