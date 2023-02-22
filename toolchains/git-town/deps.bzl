@@ -26,4 +26,4 @@ def deps():
     p = preferred_release()
     for a in p:
         name = a.replace("-", "_")
-        http_archive(name = name, build_file_content="exports_files(['git-town'])", urls = [p[a]["url"]], sha256 = p[a]["sha256"])
+        http_archive(name = name, build_file_content = "exports_files(['git-town'])", urls = [p[a]["url"]], sha256 = p[a]["sha256"])

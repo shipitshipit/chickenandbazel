@@ -3,6 +3,7 @@ name: Bazel build
 env:
   HOMEBREW_NO_AUTO_UPDATE: 1
 
+# yamllint disable-line rule:truthy
 on: [push]
 
 jobs:

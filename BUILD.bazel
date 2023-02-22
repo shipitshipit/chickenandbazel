@@ -1,3 +1,4 @@
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@rules_pkg//:pkg.bzl", "pkg_tar")
 load("@//lib:pkgbuild.bzl", "pkgbuild_tars")
 
@@ -30,4 +31,12 @@ pkgbuild_tars(
     identifier = "nu.old.chickenandbazel",
     tars = [":binaries"],
     version = VERSION,
+)
+
+copy_file(
+    name = "dist_pkg",
+    src = ":pkg",
+    out = ".distrib/chickenandbazel.pkg",
+    allow_symlink = True,
+    is_executable = False,
 )
