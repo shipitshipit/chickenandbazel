@@ -27,4 +27,4 @@ jobs:
           git --version
           env | sort
           python3 -m pip install GitPython==3.1.27
-          python3 lib/python/release-worthy.py --repo_path $(pwd) --dryrun --autotag_release --autotag_threshold major=1.0.0 minor=0.1.0 patch=0.0.5
+          python3 lib/python/release-worthy.py --repo_path $(pwd) --autotag_release --autotag_threshold major=1.0.0 minor=0.1.0 patch=0.0.5

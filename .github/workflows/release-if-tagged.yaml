@@ -27,6 +27,8 @@ jobs:
 
       - name: Create release with Changelog Text
         uses: "marvinpinto/action-automatic-releases@latest"
+        env:
+          RELEASE_TAG: ${{ github.ref }}
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: ${{ github.ref }}
