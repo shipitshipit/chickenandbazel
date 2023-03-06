@@ -7,6 +7,9 @@ on:
     tags:
       - "v*"
 
+env:
+  TEST_TMPDIR: /tmp/.bazel
+
 jobs:
   create-release:
     name: "Create Release"
@@ -16,23 +19,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - run: mkdir -p ${HOME}/.cache/bazel
       - name: Mount bazel cache  # Optional
         uses: actions/cache@v3
         with:
-          path: "${HOME}/.cache/bazel"
-          key: bazel
+          path: "/tmp/"
+          key: .bazel
 
+      - run: |
+          echo "GITHUB_REF ${GITHUB_REF#refs/*/}"
+          echo "GITHUB.REF ${{ github.ref }}"
       - run: bazel build //...
 
-      - name: Create release with Changelog Text
-        uses: "marvinpinto/action-automatic-releases@latest"
-        env:
-          RELEASE_TAG: ${{ github.ref }}
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: ${{ github.ref }}
-          title: Release ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          files: |
-            bazel-bin/chickenandbazel.pkg
+#      - name: Create release with Changelog Text
+#        uses: "marvinpinto/action-automatic-releases@latest"
+#        env:
+#          RELEASE_TAG: ${{ github.ref }}
+#        with:
+#          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+#          automatic_release_tag: ${{ github.ref }}
+#          title: Release ${{ github.ref }}
+#          release_name: Release ${{ github.ref }}
+#          files: |
+#            bazel-bin/chickenandbazel.pkg
