@@ -1,6 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "aspect_bazel_lib",
+    sha256 = "2518c757715d4f5fc7cc7e0a68742dd1155eaafc78fb9196b8a18e13a738cea2",
+    strip_prefix = "bazel-lib-1.28.0",
+    url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.28.0/bazel-lib-v1.28.0.tar.gz",
+)
+
+http_archive(
     name = "bazel_skylib",
     sha256 = "b8a1527901774180afc798aeb28c4634bdccf19c4d98e7bdd1ce79d1fe9aaad7",
     urls = [
@@ -35,6 +42,10 @@ http_archive(
 load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
 
 rules_pkg_dependencies()
+
+load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies")
+
+aspect_bazel_lib_dependencies()
 
 ###
 # Tools bundled

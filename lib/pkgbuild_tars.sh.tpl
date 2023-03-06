@@ -15,6 +15,8 @@
 
 TMPDIR=`mktemp -d -t pkgbuild` || { echo "$0: Cannot create working (root) directory; aborting"; exit 1; }
 
+eval $(cat /dev/null {STATUS_FILE_STABLE} {STATUS_FILE_VOLATILE} | grep ^VERSION | sed -e 's/ v/=/g')
+
 # extract all tarchives to the designated root
 for t in {TARS} ; do
        tar -C "${TMPDIR}" -xf ${t}
@@ -26,6 +28,6 @@ done
     --identifier "{IDENTIFIER}" \
     {OPT_COMPONENT_PLIST} \
     {OPT_SCRIPTS_DIR} \
-    --version "{VERSION}" \
+    --version "${VERSION:-{ATTR_VERSION}}" \
     --root "${TMPDIR}" \
     "{OUTPUT}"

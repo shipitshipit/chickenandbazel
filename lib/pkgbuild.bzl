@@ -20,6 +20,8 @@
 #
 #     sudo installer -pkg bazel-out/darwin-fastbuild/bin/chickenandbazel.pkg -target /
 
+load("@aspect_bazel_lib//lib:stamping.bzl", "STAMP_ATTRS", "maybe_stamp")
+
 def _pkgbuild_tars_impl(ctx):
     """Completes a "pkgbuild --root" but pre-deployed the "tars" to that given "root".
     Args:
@@ -31,10 +33,8 @@ def _pkgbuild_tars_impl(ctx):
         package_name: (optional) Target package name, defaulting to (name).pkg.
         tars: One or more tar archives representing deliverables that should be extracted in "root"
             before packaging.
-        version: a version string for the package; recommending Semver for simplicity.  Comparing
-            two versions of matching identifier can be used to determine whether one package
-            upgrades or downgrades another.
     """
+    args = ctx.actions.args()
 
     component_plist_opt = ""
     if ctx.attr.component_plist:
@@ -44,6 +44,16 @@ def _pkgbuild_tars_impl(ctx):
     package_name = ctx.attr.package_name or "{}.pkg".format(ctx.attr.name)
     pkg = ctx.actions.declare_file(package_name)
     inputs = [] + ctx.files.tars  # TODO: plus pkgbuild, plus template, plus plist
+    status_file_stable = ""
+    status_file_volatile = ""
+
+    stamp = maybe_stamp(ctx)
+    if stamp:
+        args.add("--volatile_status_file", stamp.volatile_status_file.path)
+        args.add("--stable_status_file", stamp.stable_status_file.path)
+        status_file_stable = stamp.stable_status_file.path
+        status_file_volatile = stamp.volatile_status_file.path
+        inputs.extend([stamp.volatile_status_file, stamp.stable_status_file])
 
     #pkgbuild_toolchain = ctx.toolchains["@rules_pkg//toolchains/macos:pkgbuild_toolchain_type"].pkgbuild.path
 
@@ -54,13 +64,15 @@ def _pkgbuild_tars_impl(ctx):
         output = script_file,
         is_executable = True,
         substitutions = {
+            "{ATTR_VERSION}": ctx.attr.version,
             "{IDENTIFIER}": identifier,
             "{OPT_COMPONENT_PLIST}": component_plist_opt,
             "{OPT_SCRIPTS_DIR}": "",
             "{OUTPUT}": pkg.path,
             #"{PKGBUILD}": pkgbuild_toolchain,
+            "{STATUS_FILE_STABLE}": status_file_stable,
+            "{STATUS_FILE_VOLATILE}": status_file_volatile,
             "{TARS}": " ".join([f.path for f in ctx.files.tars]),
-            "{VERSION}": ctx.attr.version,
         },
     )
 
@@ -84,7 +96,7 @@ def _pkgbuild_tars_impl(ctx):
 
 pkgbuild_tars = rule(
     implementation = _pkgbuild_tars_impl,
-    attrs = {
+    attrs = dict({
         "component_plist": attr.label(allow_files = True, mandatory = False),
         "identifier": attr.string(
             mandatory = False,
@@ -108,7 +120,7 @@ pkgbuild_tars = rule(
             allow_single_file = True,
             default = ":pkgbuild_tars.sh.tpl",
         ),
-    },
+    }, **STAMP_ATTRS),
     doc = "Package a complete destination root.  For example, the 'xcodebuild' tool with the 'install' action creates a destination root.  This rule is intended to package up a destination root that would be given as 'pkgbuild --root' except that it wants to lay out the given 'tars' into that 'root' before packaging",
 )
 
