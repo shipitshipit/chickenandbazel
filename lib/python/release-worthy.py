@@ -239,7 +239,7 @@ def main():
             )
             print(f"Tagged {new_version} per {release}")
             repo.remote().push(new_version)
-            print(f"Pushed {new_version} to {repo.remote.origin}")
+            print(f"Pushed {new_version} to {[x for x in repo.remote().urls][0]}")
         else:
             print(f"Skipped (dryrun) tagging {new_version} per {release}")
             print(f"Skipped (dryrun) pushing {new_version} to {[x for x in repo.remote().urls][0]}")
