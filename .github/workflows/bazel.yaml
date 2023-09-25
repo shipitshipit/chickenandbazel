@@ -14,12 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [self-macos-amd64]
         #os: [macos-latest, macos-12, macos-11]
     steps:
+      - run: echo "/usr/local/bin" >> $GITHUB_PATH  # uses local python3 as chicken-and-egg resolver, needs to be in path
       - uses: actions/checkout@v3
-      # action runners have bazelisk: - uses: bazelbuild/setup-bazelisk@v2
-        # https://github.com/bazelbuild/bazel/issues/11062
+      - uses: bazelbuild/setup-bazelisk@v2
+        # ...because now running locally, need to install the binary where the build user can see it
       - run: mkdir -p "${TEST_TMPDIR}"
       - run: env | sort
       - name: Mount bazel cache  # Optional
