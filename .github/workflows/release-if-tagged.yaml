@@ -13,11 +13,17 @@ env:
 jobs:
   create-release:
     name: "Create Release"
-    runs-on: ubuntu-latest
-
+    runs-on: self-macos-amd64
+    permissions:  # let's trim these after it's working
+      contents: write  # likely important to write new releases
     steps:
+      - run: echo "/usr/local/bin" >> $GITHUB_PATH  # uses local python3 as chicken-and-egg resolver, needs to be in path
+
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: bazelbuild/setup-bazelisk@v2
+        # ...because now running locally, need to install the binary where the build user can see it
 
       - name: Mount bazel cache  # Optional
         uses: actions/cache@v3
@@ -25,19 +31,33 @@ jobs:
           path: "/tmp/"
           key: .bazel
 
-      - run: |
+      - id: tag_manipulation
+        run: |
           echo "GITHUB_REF ${GITHUB_REF#refs/*/}"
           echo "GITHUB.REF ${{ github.ref }}"
+          echo "ref=${GITHUB_REF#refs/*/}" >> "$GITHUB_OUTPUT"
       - run: bazel build //...
 
-#      - name: Create release with Changelog Text
-#        uses: "marvinpinto/action-automatic-releases@latest"
-#        env:
-#          RELEASE_TAG: ${{ github.ref }}
-#        with:
-#          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-#          automatic_release_tag: ${{ github.ref }}
-#          title: Release ${{ github.ref }}
-#          release_name: Release ${{ github.ref }}
-#          files: |
-#            bazel-bin/chickenandbazel.pkg
+      - name: Create release with Changelog Text
+        id: create_release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        env:
+          RELEASE_TAG: ${{ steps.tag_manipulation.outputs.ref }}
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          title: Release ${{ steps.tag_manipulation.outputs.ref }}
+          automatic_release_tag: "aar-latest"
+
+      - name: Upload Multiarch Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # This pulls from the CREATE RELEASE step above, referencing its ID to get its outputs
+          # object, which include a `upload_url`. See this blog post for more info:
+          # https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bazel-bin/chickenandbazel.pkg
+          asset_name: chickenandbazel-amd64-arm64.pkg
+          asset_content_type: application/x-xar
